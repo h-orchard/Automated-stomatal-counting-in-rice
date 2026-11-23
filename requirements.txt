@@ -4,4 +4,4 @@
 # All
 pillow>=11.3.0
 requests>=2.32.4
-inference-sdk>=3.14.4
+inference_sdk>=3.14.4
