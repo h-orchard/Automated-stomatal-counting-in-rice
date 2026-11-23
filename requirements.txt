@@ -1,0 +1,7 @@
+# YOLOv11 requirements
+# Usage: pip install -r requirements.txt
+
+# All
+pillow>=11.3.0
+requests>=2.32.4
+inference-sdk>=3.14.4
