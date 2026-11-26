@@ -5,56 +5,45 @@ import pandas as pd
 import streamlit as st
 from detector import process_single_image
 
-st.set_page_config(page_title="Rice Stomatal Density Counter", layout="wide")
-st.title("Rice Stomatal Density Counter (400x YOLOv11)")
-st.caption("Upload Dino-lite rice leaf images to crop, detect whole stomata, and calculate density per mm².")
+st.set_page_config(page_title="Rice Stomatal Density Calculator", layout="wide")
+st.title("Calculate rice stomatal density from ~400x images using YOLOv11 machine learning model)")
+st.caption("Upload Dino-lite images of rice leaves (abaxial or adaxial) to calculate density!")
 
 # --- Sidebar Settings ---
 st.sidebar.header("Configuration")
 
-# Safely check for Streamlit secrets without crashing if no secrets.toml exists locally
-try:
-    default_api_key = st.secrets.get("RoboflowAPIKey", "")
-except Exception:
-    default_api_key = ""
-
-api_key = st.sidebar.text_input(
+  api_key = st.sidebar.text_input(
     "Roboflow API Key",
-    value=default_api_key,
     type="password",
     help="Found in Roboflow Settings > API Keys"
 )
 
 image_width_mm = st.sidebar.number_input(
     "Original Image Width (mm)",
-    min_value=0.001,
-    value=0.650,
-    step=0.005,
-    format="%.4f",
-    help="Measured from a calibration slide/micrometer at 400x magnification"
+    help="Measured from a calibration slide/micrometer at the same magnification as your images"
 )
 
 confidence = st.sidebar.slider(
     "Confidence Threshold",
-    min_value=0.05,
-    max_value=0.95,
+    min_value=0.00,
+    max_value=1.00,
     value=0.15,
     step=0.05,
-    help="Lower = more detections (risk of false positives); Higher = stricter"
+    help="Lower = less stringent (risk of false positives); Higher = stricter (risk of false negatives)"
 )
 
 edge_margin = st.sidebar.number_input(
-    "Edge Exclusion Margin (px)",
+    "Edge Exclusion Margin",
     min_value=0.0,
     value=0.5,
     step=0.5,
-    help="Excludes stomata boxes closer than this distance to the crop border"
+    help="Excludes stomates touching the image boarder"
 )
 
 # --- Main Upload & Processing ---
 uploaded_files = st.file_uploader(
     "Upload Dino-lite microscope images",
-    type=["jpg", "jpeg", "png", "tif", "tiff"],
+    type=["jpg", "jpeg", "png", "tif", "tiff", "bmp"],
     accept_multiple_files=True
 )
 
