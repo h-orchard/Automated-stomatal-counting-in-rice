@@ -1,7 +1,7 @@
 # YOLOv11 requirements
 # Usage: pip install -r requirements.txt
 
-# All
+streamlit
 pillow
+pandas
 requests
-inference-sdk
