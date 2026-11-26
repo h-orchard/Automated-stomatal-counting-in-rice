@@ -12,7 +12,7 @@ st.caption("Upload Dino-lite images of rice leaves (abaxial or adaxial) to calcu
 # --- Sidebar Settings ---
 st.sidebar.header("Configuration")
 
-  api_key = st.sidebar.text_input(
+api_key = st.sidebar.text_input(
     "Roboflow API Key",
     type="password",
     help="Found in Roboflow Settings > API Keys"
