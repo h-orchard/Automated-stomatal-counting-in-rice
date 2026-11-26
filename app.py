@@ -6,8 +6,8 @@ import streamlit as st
 from detector import process_single_image
 
 st.set_page_config(page_title="Rice Stomatal Density Calculator", layout="wide")
-st.title("Calculate rice stomatal density from ~400x images using YOLOv11 machine learning model)")
-st.caption("Upload Dino-lite images of rice leaves (abaxial or adaxial) to calculate density!")
+st.title("Rice Stomatal Density Calculator")
+st.caption("Calculate rice stomatal density from ~400x images using YOLOv11 machine learning model)")
 
 # --- Sidebar Settings ---
 st.sidebar.header("Configuration")
@@ -69,7 +69,6 @@ if "results" in locals() and results:
         {
             "image": r["image"],
             "stomate_count": r["stomate_count"],
-            "crop_area_mm2": r["crop_area_mm2"],
             "stomatal_density_per_mm2": r["stomatal_density_per_mm2"]
         }
         for r in results
@@ -84,9 +83,9 @@ if "results" in locals() and results:
 
     # Visual verification gallery
     st.subheader("Labelled Image Inspection")
-    cols = st.columns(5)
+    cols = st.columns(8)
     for idx, r in enumerate(results):
-        with cols[idx % 5]:
+        with cols[idx % 8]:
             st.image(
                 r["annotated_image"],
                 caption=f"{r['image']} - Count: {r['stomate_count']})"
