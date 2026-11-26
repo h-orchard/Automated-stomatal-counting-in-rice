@@ -7,7 +7,7 @@ from detector import process_single_image
 
 st.set_page_config(page_title="Rice Stomatal Density Calculator", layout="wide")
 st.title("Rice Stomatal Density Calculator")
-st.caption("Calculate rice stomatal density from ~400x images using YOLOv11 machine learning model)")
+st.caption("Calculate rice stomatal density from ~400x images using YOLOv11 machine learning model")
 
 # --- Sidebar Settings ---
 st.sidebar.header("Configuration")
