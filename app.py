@@ -35,7 +35,7 @@ confidence = st.sidebar.slider(
 edge_margin = st.sidebar.number_input(
     "Edge Exclusion Margin",
     min_value=0.0,
-    value=1,
+    value=1.0,
     step=0.5,
     help="Excludes stomates touching the image boarder"
 )
