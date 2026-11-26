@@ -35,7 +35,7 @@ confidence = st.sidebar.slider(
 edge_margin = st.sidebar.number_input(
     "Edge Exclusion Margin",
     min_value=0.0,
-    value=0.5,
+    value=1,
     step=0.5,
     help="Excludes stomates touching the image boarder"
 )
@@ -43,43 +43,28 @@ edge_margin = st.sidebar.number_input(
 # --- Main Upload & Processing ---
 uploaded_files = st.file_uploader(
     "Upload Dino-lite microscope images",
-    type=["jpg", "jpeg", "png", "tif", "tiff", "bmp"],
+    type=["bmp"],
     accept_multiple_files=True
 )
 
-if uploaded_files:
-    if not api_key:
-        st.warning("Please enter your Roboflow API Key in the sidebar to run inference.")
-        st.stop()
-
-    if st.button(f"Analyse {len(uploaded_files)} Image(s)", type="primary"):
-        results = []
-        progress = st.progress(0)
-
-        for idx, file in enumerate(uploaded_files):
-            try:
-                res = process_single_image(
-                    api_key=api_key,
-                    image_bytes=file.getvalue(),
-                    filename=file.name,
-                    image_width_mm=image_width_mm,
-                    confidence=confidence,
-                    edge_margin=edge_margin
-                )
-                results.append(res)
-            except Exception as error:
-                st.error(f"Skipping {file.name}: {error}")
-
-            progress.progress((idx + 1) / len(uploaded_files))
-
-        # Store results in session_state so they stay visible when clicking download buttons
-        st.session_state["results"] = results
+# process uploaded images
+if uploaded_files and api_key:
+    if st.button(f"Analyse {len(uploaded_files)} Image(s)"):
+        results = [
+            process_single_image(
+                api_key=api_key,
+                image_bytes=file.getvalue(),
+                filename=file.name,
+                image_width_mm=image_width_mm,
+                confidence=confidence,
+                edge_margin=edge_margin
+            )
+            for file in uploaded_files
+        ]
 
 # --- Display Results & Downloads ---
-if "results" in st.session_state and st.session_state["results"]:
-    results = st.session_state["results"]
-
-    # Build summary DataFrame
+# build the summary table
+if "results" in locals() and results:
     df = pd.DataFrame([
         {
             "image": r["image"],
@@ -90,37 +75,19 @@ if "results" in st.session_state and st.session_state["results"]:
         for r in results
     ])
 
+    # display results
     st.subheader("Results Summary")
     st.dataframe(df, use_container_width=True)
 
-    # Create ZIP archive of all labelled images in memory
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
-        for r in results:
-            zf.writestr(r["labelled_filename"], r["annotated_bytes"])
-
-    today_str = date.today().strftime("%d_%m_%y")
-    col_csv, col_zip = st.columns(2)
-    col_csv.download_button(
-        label="Download Results CSV",
-        data=df.to_csv(index=False).encode("utf-8"),
-        file_name=f"{today_str}_stomatal_density.csv",
-        mime="text/csv"
-    )
-    col_zip.download_button(
-        label="Download Labelled Images (ZIP)",
-        data=zip_buffer.getvalue(),
-        file_name=f"{today_str}_labelled_images.zip",
-        mime="application/zip"
-    )
+    # csv download button
+    st.download_button("Download Results CSV", df.to_csv(index=False), "stomatal_density.csv")
 
     # Visual verification gallery
     st.subheader("Labelled Image Inspection")
-    cols = st.columns(3)
+    cols = st.columns(5)
     for idx, r in enumerate(results):
-        with cols[idx % 3]:
+        with cols[idx % 5]:
             st.image(
                 r["annotated_image"],
-                caption=f"{r['image']} | Count: {r['stomate_count']} ({r['stomatal_density_per_mm2']} / mm²)",
-                use_container_width=True
+                caption=f"{r['image']} - Count: {r['stomate_count']})"
             )
