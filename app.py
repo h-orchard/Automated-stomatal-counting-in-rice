@@ -12,6 +12,11 @@ st.caption("Calculate rice stomatal density from ~400x images using YOLOv11 mach
 # --- Sidebar Settings ---
 st.sidebar.header("Configuration")
 
+plant_type = st.sidebar.selectbox(
+    "Plant species / Model type",
+    options=["Rice", "Wheat"]
+)
+
 api_key = st.sidebar.text_input(
     "Roboflow API Key",
     type="password",
@@ -58,6 +63,7 @@ if uploaded_files and api_key:
                 image_width_mm=image_width_mm,
                 confidence=confidence,
                 edge_margin=edge_margin
+                plant_type=plant_type
             )
             for file in uploaded_files
         ]
@@ -88,5 +94,5 @@ if "results" in locals() and results:
         with cols[idx % 8]:
             st.image(
                 r["annotated_image"],
-                caption=f"{r['image']} - Count: {r['stomate_count']}"
+                caption=f"{r['image']} - Count: {r['stomate_count']})"
             )
