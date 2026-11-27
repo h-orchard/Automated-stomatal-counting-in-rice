@@ -1,7 +1,7 @@
 import io
 from pathlib import Path
 from PIL import Image, ImageDraw
-from requests
+from inference_sdk import InferenceHTTPClient, InferenceConfiguration
 
 # Run model
 ricestomata400x = (
@@ -34,7 +34,7 @@ def count_stomata(uploaded, api_key, image_width_mm, confidence=0.15, edge_margi
 
     for filename, image_data in uploaded.items():
         # open and crop the image
-        image = Image.open(io.BytesIO(image_data))
+        image = Image.open(io.BytesIO(image_data)).convert("RGB")
         w, h = image.size
         crop = image.crop((LEFT * w, TOP * h, RIGHT * w, BOTTOM * h))
 
@@ -85,7 +85,16 @@ def count_stomata(uploaded, api_key, image_width_mm, confidence=0.15, edge_margi
         rows.append({
             "image": filename,
             "stomate_count": stomate_count,
-            "stomatal_density_per_mm2": round(density, 2)
+            "crop_area_mm2": round(area_mm2, 6),
+            "stomatal_density_per_mm2": round(density, 2),
+            "annotated_image": crop,
+            "annotated_bytes": img_buffer.getvalue(),
+            "labelled_filename": f"{Path(filename).stem}.png"
         })
 
     return rows
+
+
+# Bridge so app.py can call process_single_image()
+def process_single_image(api_key, image_bytes, filename, image_width_mm, confidence=0.15, edge_margin=1):
+    return count_stomata({filename: image_bytes}, api_key, image_width_mm, confidence, edge_margin)[0]
