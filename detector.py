@@ -1,7 +1,7 @@
 import io
 from pathlib import Path
 from PIL import Image, ImageDraw
-from inference_sdk import InferenceHTTPClient, InferenceConfiguration
+from requests
 
 # Run model
 ricestomata400x = (
