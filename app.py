@@ -62,7 +62,7 @@ if uploaded_files and api_key:
                 filename=file.name,
                 image_width_mm=image_width_mm,
                 confidence=confidence,
-                edge_margin=edge_margin
+                edge_margin=edge_margin,
                 plant_type=plant_type
             )
             for file in uploaded_files
