@@ -17,7 +17,7 @@ TOP = 0
 BOTTOM = 0.99445
 
 
-def count_stomata(uploaded, api_key, image_width_mm, confidence=0.15, edge_margin=1):
+def count_stomata(uploaded, api_key, image_width_mm, plant_type="Rice", confidence=0.15, edge_margin=1):
     CLIENT = InferenceHTTPClient(
         api_url="https://serverless.roboflow.com",
         api_key=api_key
@@ -105,4 +105,4 @@ def count_stomata(uploaded, api_key, image_width_mm, confidence=0.15, edge_margi
 
 # Bridge so app.py can call process_single_image()
 def process_single_image(api_key, image_bytes, filename, image_width_mm, plant_type="Rice", confidence=0.15, edge_margin=1):
-    return count_stomata({filename: image_bytes}, api_key, image_width_mm, plant_type, confidence, edge_margin)[0]in)[0]
+    return count_stomata({filename: image_bytes}, api_key, image_width_mm, plant_type, confidence, edge_margin)[0]
