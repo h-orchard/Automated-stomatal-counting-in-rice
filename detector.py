@@ -48,7 +48,7 @@ def count_stomata(uploaded, api_key, image_width_mm, plant_type="Rice", confiden
 
         # run the model on the cropped image
         with CLIENT.use_configuration(config):
-            predictions = CLIENT.infer(crop, model_id=ricestomata400x)["predictions"]
+            predictions = CLIENT.infer(crop, model_id=MODELS[plant_type])["predictions"]
 
         ## only keep stomates that are fully in the image - exclude stomates whose outer boxes touch the edge
         crop_width, crop_height = crop.size
