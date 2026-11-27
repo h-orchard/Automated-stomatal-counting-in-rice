@@ -4,4 +4,4 @@
 streamlit
 pillow
 pandas
-requests
+inference-sdk
