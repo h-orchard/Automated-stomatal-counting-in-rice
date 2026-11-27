@@ -88,5 +88,5 @@ if "results" in locals() and results:
         with cols[idx % 8]:
             st.image(
                 r["annotated_image"],
-                caption=f"{r['image']} - Count: {r['stomate_count']})"
+                caption=f"{r['image']} - Count: {r['stomate_count']}"
             )
